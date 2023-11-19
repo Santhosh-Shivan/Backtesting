@@ -10,7 +10,7 @@ def test_run():
     endDate = datetime.date(2023, 11, 15)
     # endDate = datetime.date.today()
     # df = fetcher.get_data_for_symbol("ONGC", "ONGC.NS", startDate, endDate)
-    df = fetcher.__download_data(["TCS.NS"], startDate, endDate)
+    df = fetcher.__download_data(["ONGC.NS"], startDate, endDate)
     print(df.tail(1))
 
     # strategy.RSI(df)

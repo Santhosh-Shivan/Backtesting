@@ -131,8 +131,10 @@ def strategy_results(df, title="Strategy Results"):
     # print df.tail(1)
     last_row = df.tail(1)
 
-    result_series = last_row["Accumulated Close"] / last_row["Adj Close"]
-    pct_change = result_series.values[0] * 100
+    result_series = (last_row["Accumulated Close"] - last_row["Adj Close"]) / last_row[
+        "Adj Close"
+    ]
+    pct_more = result_series.values[0] * 100
     txn_count = df["Stance"].diff().value_counts().drop([0]).sum()
 
     ax = df[["Adj Close", "Accumulated Close"]].plot(title=title, fontsize=12)
@@ -143,7 +145,7 @@ def strategy_results(df, title="Strategy Results"):
         0.05,
         0.9,
         "Txn. count: " + str(txn_count),
-        fontsize=15,
+        fontsize=9,
         ha="left",
         va="center",
         transform=ax.transAxes,
@@ -151,8 +153,8 @@ def strategy_results(df, title="Strategy Results"):
     plt.text(
         0.05,
         0.8,
-        "% diff: " + str(pct_change),
-        fontsize=15,
+        "Acc. Close = " + str(pct_more) + "% more than Adj. Close",
+        fontsize=9,
         ha="left",
         va="center",
         transform=ax.transAxes,

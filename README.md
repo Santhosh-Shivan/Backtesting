@@ -12,6 +12,14 @@ The overview is as follows:
 - Plot graph of portfolio growth , showing the original prices, versus the portfolio value if you trade by the signals.
 - Fine-tune the strategy, run the code again, make money, and then make some more !!
 
+A typical plot for Bollinger-band based strategy:
+
+<img src="https://github.com/Santhosh-Shivan/Backtesting/blob/main/images/Figure_1.png">
+
+Signals for the above strategy:
+
+<img src="https://github.com/Santhosh-Shivan/Backtesting/blob/main/images/Figure_2.png">
+
 This uses Pandas, NumPy, MatPlotLib, and a host of other python libraries.
 
 
