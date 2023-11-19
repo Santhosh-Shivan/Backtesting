@@ -24,7 +24,7 @@ def test_run():
     # draw.strategy_results(df)
     # draw.bollinger_bands_from_df(df)
 
-    strategy.Momemtum_SMA(df)
+    strategy.Velocity_SMA(df)
     draw.strategy_results(df)
 
     draw.column(

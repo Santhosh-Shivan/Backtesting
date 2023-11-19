@@ -85,7 +85,7 @@ def Bollinger_Band(df):
     compute.accumulated_close(df)
 
 
-def Momemtum_SMA(df):
+def Velocity_SMA(df):
     df["SMA"] = np.round(compute.running_average(df["Adj Close"], windowsize=30), 2)
 
     df["Velocity"] = df["SMA"].diff()

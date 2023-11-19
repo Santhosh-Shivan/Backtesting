@@ -28,10 +28,6 @@ def __download_data(ticker, start, end, write_to_file=True):
         if write_to_file:
             df.to_csv(fileName)
 
-    print("df from Yahoo is:")
-    print(df.shape)
-    print(df.head())
-
     return df
 
 
