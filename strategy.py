@@ -85,5 +85,30 @@ def Bollinger_Band(df):
     compute.accumulated_close(df)
 
 
+def Momemtum_SMA(df):
+    df["SMA"] = np.round(compute.running_average(df["Adj Close"], windowsize=30), 2)
+
+    df["Velocity"] = df["SMA"].diff()
+
+    df["Velocity"].fillna(method="backfill", inplace=True)
+
+    print(df["Velocity"])
+
+    df["Stance"] = 0
+    last_stance = 0
+    bought_set_once = False
+
+    for index, row in df.iterrows():
+        if row["Adj Close"] > row["SMA"] and row["Velocity"] > 0:
+            bought_set_once = True
+            last_stance = 1
+        elif bought_set_once and row["Adj Close"] < row["SMA"] and row["Velocity"] < 0:
+            last_stance = -1
+
+        df.at[index, "Stance"] = last_stance
+
+    compute.accumulated_close(df)
+
+
 def MACD(df):
     print("Pending.")

@@ -11,19 +11,21 @@ def test_run():
     endDate = datetime.date(2023, 11, 15)
     # endDate = datetime.date.today()
     # df = fetcher.get_data_for_symbol("ONGC", "ONGC.NS", startDate, endDate)
-    df = fetcher.__download_data(["TCS.NS"], startDate, endDate)
+    df = fetcher.__download_data(["ONGC.NS"], startDate, endDate)
     print(df.tail(1))
 
-    compute.money_flow_index(df, 14)
     # strategy.RSI(df)
     # draw.strategy_results(df, title="RSI Strategy")
 
     # strategy.SMA_Crossover(df)
     # draw.strategy_results(df)
 
-    strategy.Bollinger_Band(df)
-    draw.strategy_results(df)
+    # strategy.Bollinger_Band(df)
+    # draw.strategy_results(df)
     # draw.bollinger_bands_from_df(df)
+
+    strategy.Momemtum_SMA(df)
+    draw.strategy_results(df)
 
     draw.column(
         df, title="Stance", columns=["Stance"]
