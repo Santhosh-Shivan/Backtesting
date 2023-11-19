@@ -11,8 +11,8 @@ The flow to follow is:
 - 2 plots will be shown as a result
     * First one shows the comparison of accumulated price of the stock if you follow the strategy to the original stock price over the specified time period
     * Second one shows the signals over the same time period
-        . +1 - buy and hold
-        . -1 - sell and hold
+        - +1 - buy and hold
+        - -1 - sell and hold
 - Play with the parameters of the strategy!
 
 A typical plot for Bollinger-band based strategy:
