@@ -50,9 +50,9 @@ def bollinger_bands(rm, rstd):
     return upper_band, lower_band
 
 
-def RSI(series, period):
-    # print series.size
-    delta = series.diff().dropna()
+def RSI(Series, period):
+    # print Series.size
+    delta = Series.diff().dropna()
     # print 'size after drop is '
     # print delta.size
     u = delta * 0
@@ -69,8 +69,8 @@ def RSI(series, period):
     )
     df = pd.DataFrame(100 - 100 / (1 + rs))
 
-    # slice first period dates, create series with 50 as value, per date. then concat.
-    prefixed_values = pd.Series(50, index=series.index.values[0:period])
+    # slice first period dates, create Series with 50 as value, per date. then concat.
+    prefixed_values = pd.Series(50, index=Series.index.values[0:period])
     return pd.concat([prefixed_values, df.iloc[:, 0]])
 
 
@@ -146,20 +146,53 @@ def money_flow_index(df, n):
     :param n:
     :return: pandas.DataFrame
     """
-    PP = (df["High"] + df["Low"] + df["Close"]) / 3
+    # Compute Typical Price
+    df["PP"] = (df["High"] + df["Low"] + df["Close"]) / 3
+
+    # Money flow direction (0-Neg, 1-Pos)
+    i = 0
+    MF = [1]
+
+    while i < len(df) - 1:
+        if df.iloc[i + 1]["PP"] > df.iloc[i]["PP"]:
+            MF.append(1)
+        else:
+            MF.append(0)
+
+        i += 1
+
+    # Compute Pos and Neg flow
     i = 0
     PosMF = [0]
-    while i < df.index[-1]:
-        if PP[i + 1] > PP[i]:
-            PosMF.append(PP[i + 1] * df.get_value(i + 1, "Volume"))
+    NegMF = [0]
+    while i < len(df) - 1:
+        if MF[i + 1] == 1:
+            PosMF.append(df.iloc[i + 1]["PP"] * df.iloc[i + 1]["Volume"])
+            NegMF.append(0)
         else:
             PosMF.append(0)
-        i = i + 1
+            NegMF.append(df.iloc[i + 1]["PP"] * df.iloc[i + 1]["Volume"])
+
+        i += 1
+
     PosMF = pd.Series(PosMF)
-    TotMF = PP * df["Volume"]
-    MFR = pd.Series(PosMF / TotMF)
-    MFI = pd.Series(pd.rolling_mean(MFR, n), name="MFI_" + str(n))
-    df = df.join(MFI)
+    NegMF = pd.Series(NegMF)
+
+    # Compute n-day rolling average for Pos & Neg MFs
+    ndPosMFSMA = pd.Series(np.round(running_average(PosMF, windowsize=n), 2))
+    ndNegMFSMA = pd.Series(np.round(running_average(NegMF, windowsize=n), 2))
+
+    ndPosMFSMA.fillna(method="backfill", inplace=True)
+    ndNegMFSMA.fillna(method="backfill", inplace=True)
+
+    # Compute Money Flow Ratio
+    MFR = ndPosMFSMA / ndNegMFSMA
+
+    # Compute Money Flow Index
+    MFI = pd.Series(100 - 100 / (1 + MFR))
+    MFI.index = df.index
+
+    df["MFI"] = MFI
     return df
 
 

@@ -15,7 +15,6 @@ def __download_data(ticker, start, end, write_to_file=True):
 
     allow_reading_file = True
     if os.path.isfile(fileName) and allow_reading_file:
-        # check symbol_date.csv, if present, read and return it
         print("reading from file:  " + fileName)
         df = pd.read_csv(
             fileName, index_col="Date", parse_dates=True, na_values=["nan"]
@@ -36,20 +35,8 @@ def __download_data(ticker, start, end, write_to_file=True):
     return df
 
 
-def list_available_symbols():
-    print("pending listAvailableSymbols")
-    # list as table NSE symbol and matching Yahoo symbol.
-    # possiblly save to file as well.
-
-
-def update_data_for_symbol(symbol):
-    print("pending")
-    # read file, get data from last date to current date
-    # append data to file.
-
-
 if __name__ == "__main__":
     startDate = datetime.date(2000, 1, 1)
     endDate = datetime.date.today()
     print(__download_data(["RELIANCE.NS"], startDate, endDate).head())
-    # get_data_for_symbol('RELIANCE', 'RELIANCE.NS', startDate, endDate)
+    # get_data_for_symbol(RELIANCE.NS', startDate, endDate)
