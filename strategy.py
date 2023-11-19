@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import math
 import compute
+import indicators
 
 
 # Create column Stance
@@ -11,8 +12,10 @@ import compute
 def SMA_Crossover(df, fast=42, slow=252):
     # create the moving average values and
     # simultaneously append them to new columns in our existing DataFrame.
-    df["42d"] = np.round(compute.running_average(df["Adj Close"], windowsize=42), 2)
-    df["252d"] = np.round(compute.running_average(df["Adj Close"], windowsize=252), 2)
+    df["42d"] = np.round(indicators.running_average(df["Adj Close"], windowsize=42), 2)
+    df["252d"] = np.round(
+        indicators.running_average(df["Adj Close"], windowsize=252), 2
+    )
 
     # Generate stance: 0, -1, 1.
     df["42-252"] = df["42d"] - df["252d"]
@@ -22,20 +25,14 @@ def SMA_Crossover(df, fast=42, slow=252):
     df["Stance"] = np.where(
         df["42-252"] > offset, 1, 0
     )  # 42ma being offset amount above 252 value.
-    df["Stance"] = np.where(
-        df["42-252"] < offset, -1, df["Stance"]
-    )  # offset amount below 252 value
-    # print df['Stance'].value_counts()
+    df["Stance"] = np.where(df["42-252"] < offset, -1, df["Stance"])
 
     # Generate accumulated closing price
-    compute.accumulated_close(df)  # instead of everything below:
-
-    # df_ma['Market Returns'] = np.log(df_ma['Adj Close'] / df_ma['Adj Close'].shift(1))
-    # df_ma['Strategy'] = df_ma['Market Returns'] * df_ma['Stance'].shift(1)
+    compute.accumulated_close(df)
 
 
 def RSI(df, lowerCutoff=30, upperCutoff=70, period=14):
-    df["RSI"] = pd.Series(compute.RSI(df["Adj Close"], period=period))
+    df["RSI"] = pd.Series(indicators.RSI(df["Adj Close"], period=period))
     df["Stance"] = 0
     offset = 0
     last_stance = 0
@@ -55,13 +52,13 @@ def RSI(df, lowerCutoff=30, upperCutoff=70, period=14):
 
 def Bollinger_Band(df):
     # 1. Compute rolling mean
-    rolling_mean = compute.rolling_std_mean(df["Adj Close"], window=10)
+    rolling_mean = indicators.rolling_std_mean(df["Adj Close"], window=10)
 
     # 2. Compute rolling standard deviation
-    rolling_std = compute.rolling_std(df["Adj Close"], window=10)
+    rolling_std = indicators.rolling_std(df["Adj Close"], window=10)
 
     # 3. Compute upper and lower bands
-    upper_band, lower_band = compute.bollinger_bands(rolling_mean, rolling_std)
+    upper_band, lower_band = indicators.bollinger_bands(rolling_mean, rolling_std)
 
     df["Stance"] = 0
     last_stance = 0
@@ -86,7 +83,7 @@ def Bollinger_Band(df):
 
 
 def Velocity_SMA(df):
-    df["SMA"] = np.round(compute.running_average(df["Adj Close"], windowsize=30), 2)
+    df["SMA"] = np.round(indicators.running_average(df["Adj Close"], windowsize=20), 2)
 
     df["Velocity"] = df["SMA"].diff()
 

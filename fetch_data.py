@@ -11,7 +11,7 @@ def __download_data(ticker, start, end, write_to_file=True):
     if not os.path.exists(directory):
         os.makedirs(directory)
 
-    fileName = directory + "/" + ticker[0] + ".csv"
+    fileName = directory + "/" + ticker[0] + str(start) + str(end) + ".csv"
 
     allow_reading_file = True
     if os.path.isfile(fileName) and allow_reading_file:
@@ -34,5 +34,5 @@ def __download_data(ticker, start, end, write_to_file=True):
 if __name__ == "__main__":
     startDate = datetime.date(2000, 1, 1)
     endDate = datetime.date.today()
-    print(__download_data(["RELIANCE.NS"], startDate, endDate).head())
+    print(__download_data(["HAL.NS"], startDate, endDate).head())
     # get_data_for_symbol(RELIANCE.NS', startDate, endDate)
