@@ -2,8 +2,6 @@ import pandas as pd
 import datetime
 import numpy as np
 
-# https://github.com/nlsdfnbch/pandas-technical-indicators/blob/master/technical_indicators.py
-
 
 def daily_returns(df):
     # how to read/interpret this ?

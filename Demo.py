@@ -1,30 +1,33 @@
 import datetime
-import fetch_data as fetcher
+import fetcher
 import draw
-import strategy
+import strategies
 import compute
+import indicators
 
 
-# get , strategy , draw.
+# get , Apply strategy , draw.
 def test_run():
-    startDate = datetime.date(2017, 1, 1)
+    startDate = datetime.date(2012, 1, 1)
     # endDate = datetime.date(2023, 11, 15)
     endDate = datetime.date.today()
-    df = fetcher.__download_data(["ONGC.NS"], startDate, endDate)
+    df = fetcher.__download_data(["INFY.NS"], startDate, endDate)
     print(df.tail(1))
+    """indicators.CCI(df, 20)
+    print(df["CCI_10"].tail())"""
 
-    # strategy.RSI(df)
-    # draw.strategy_results(df, title="RSI Strategy")
+    # strategies.RSI(df)
+    # draw.strategy_results(df, title="RSI strategy")
 
-    # strategy.SMA_Crossover(df)
+    # strategies.SMA_Crossover(df)
     # draw.strategy_results(df)
 
-    strategy.Bollinger_Band(df)
+    strategies.Bollinger_Band(df)
     draw.strategy_results(df)
     # draw.bollinger_bands_from_df(df)
 
-    strategy.Velocity_SMA(df)
-    draw.strategy_results(df)
+    # strategies.Velocity_SMA(df)
+    # draw.strategy_results(df)
 
     draw.column(
         df, title="Stance", columns=["Stance"]

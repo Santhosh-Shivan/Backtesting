@@ -6,26 +6,25 @@ import indicators
 
 
 # Create column Stance
-# Create column Accumulated Close
 
 
 def SMA_Crossover(df, fast=42, slow=252):
     # create the moving average values and
     # simultaneously append them to new columns in our existing DataFrame.
-    df["42d"] = np.round(indicators.running_average(df["Adj Close"], windowsize=42), 2)
-    df["252d"] = np.round(
-        indicators.running_average(df["Adj Close"], windowsize=252), 2
+    df[str(fast) + "d"] = np.round(
+        indicators.running_average(df["Adj Close"], windowsize=fast), 2
+    )
+    df[str(slow) + "d"] = np.round(
+        indicators.running_average(df["Adj Close"], windowsize=slow), 2
     )
 
     # Generate stance: 0, -1, 1.
-    df["42-252"] = df["42d"] - df["252d"]
+    df[str(fast) + "-" + str(slow)] = df[str(fast) + "d"] - df[str(slow) + "d"]
 
     offset = 0
     # add condition to ensure first stance change is never -1.
-    df["Stance"] = np.where(
-        df["42-252"] > offset, 1, 0
-    )  # 42ma being offset amount above 252 value.
-    df["Stance"] = np.where(df["42-252"] < offset, -1, df["Stance"])
+    df["Stance"] = np.where(df[str(fast) + "-" + str(slow)] > offset, 1, 0)
+    df["Stance"] = np.where(df[str(fast) + "-" + str(slow)] < offset, -1, df["Stance"])
 
     # Generate accumulated closing price
     compute.accumulated_close(df)

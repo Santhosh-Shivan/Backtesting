@@ -4,7 +4,7 @@ import os
 import datetime
 
 
-# get from yahoo/google
+# get data from yahoo finance
 # search symbols here: https://finance.yahoo.com/lookup
 def __download_data(ticker, start, end, write_to_file=True):
     directory = "yahoo_data"
@@ -32,7 +32,7 @@ def __download_data(ticker, start, end, write_to_file=True):
 
 
 if __name__ == "__main__":
-    startDate = datetime.date(2000, 1, 1)
+    startDate = datetime.date(2017, 1, 1)
     endDate = datetime.date.today()
     print(__download_data(["HAL.NS"], startDate, endDate).head())
     # get_data_for_symbol(RELIANCE.NS', startDate, endDate)
