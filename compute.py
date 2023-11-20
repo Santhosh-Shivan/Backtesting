@@ -3,41 +3,56 @@ import datetime
 import numpy as np
 
 
-def daily_returns(df):
-    # how to read/interpret this ?
-    print(df.head())
-    # (tomorrow price/today price) - 1
-    daily_return = (df / df.shift(1)) - 1
-    print(daily_return.head())
-    daily_return.ix[0, :] = 0
-    return daily_return
-
-
-def normalize(df, column="Adj Close"):
-    # take column, normalize from earliest available date.
-    print("pending normalize")
-
-
-# ---------------------------------------------
-
-
 def accumulated_close(df):
-    # requires a column Stance, and Adj close
+    # requires a column Stance and Adj close
 
-    pointer = df.iloc[0]  # first date as index.
-    booked_profit = 0.00
+    diff_LastSoldPrice_CurrAdj = 0.00
 
     for index, row in df.iterrows():
         if row["Stance"] > 0:
             df.loc[index, "Accumulated Close"] = (
-                df.loc[index, "Adj Close"] + booked_profit
+                df.loc[index, "Adj Close"] + diff_LastSoldPrice_CurrAdj
             )
             pointer = index
             # print 'Buy and hold'
         elif row["Stance"] < 0:
             df.loc[index, "Accumulated Close"] = df.loc[pointer, "Accumulated Close"]
-            booked_profit = (
-                df.loc[pointer, "Accumulated Close"] - df.loc[index, "Adj Close"]
+            diff_LastSoldPrice_CurrAdj = (
+                df.loc[index, "Accumulated Close"] - df.loc[index, "Adj Close"]
+            )
+            # print 'Sell and hold'
+        else:
+            df.loc[index, "Accumulated Close"] = df.loc[index, "Adj Close"]
+            # print 'Waiting...'
+
+
+def accumulated_close_after_fees(df):
+    # requires a column Stance and Adj close
+
+    diff_LastSoldPrice_CurrAdj = 0.00
+    last_stance = 0
+    for index, row in df.iterrows():
+        if row["Stance"] > 0:
+            if row["Stance"] != last_stance:
+                # STT = 0.1% of trading price
+                fees_buy_side = 0.001 * df.loc[index, "Adj Close"]
+                last_stance = row["Stance"]
+
+            df.loc[index, "Accumulated Close"] = (
+                df.loc[index, "Adj Close"] + diff_LastSoldPrice_CurrAdj - fees_buy_side
+            )
+            pointer = index
+            # print 'Buy and hold'
+        elif row["Stance"] < 0:
+            if row["Stance"] != last_stance:
+                # STT = 0.1% of trading price
+                fees_sell_side = 0.001 * df.loc[index, "Adj Close"]
+                last_stance = row["Stance"]
+            df.loc[index, "Accumulated Close"] = df.loc[pointer, "Accumulated Close"]
+            diff_LastSoldPrice_CurrAdj = (
+                df.loc[pointer, "Accumulated Close"]
+                - df.loc[index, "Adj Close"]
+                - fees_sell_side
             )
             # print 'Sell and hold'
         else:

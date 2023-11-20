@@ -88,8 +88,6 @@ def Velocity_SMA(df):
 
     df["Velocity"].fillna(method="backfill", inplace=True)
 
-    print(df["Velocity"])
-
     df["Stance"] = 0
     last_stance = 0
     bought_set_once = False
@@ -103,7 +101,7 @@ def Velocity_SMA(df):
 
         df.at[index, "Stance"] = last_stance
 
-    compute.accumulated_close(df)
+    compute.accumulated_close_after_fees(df)
 
 
 def MACD(df):

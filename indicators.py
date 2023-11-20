@@ -181,6 +181,7 @@ def money_flow_index(df, n):
     return df
 
 
+# Not getting same values as in TradingView
 def CCI(df, n):
     """Calculate Commodity Channel Index for given data.
 
@@ -190,28 +191,11 @@ def CCI(df, n):
     """
     TP = (df["High"] + df["Low"] + df["Close"]) / 3
     # TPSMA = pd.Series(np.round(running_average(TP, windowsize=n), 2))
-    TPSMA = pd.Series(TP.rolling(n).mean())
+    TPSMA = pd.Series(np.round(running_average(TP, windowsize=n), 2))
     temp = (TP - TPSMA).abs()
     print(temp.tail())
     meanDeviation = pd.Series(np.round(running_average(temp, windowsize=n), 2))
     CCI = (TP - TPSMA) / (0.015 * meanDeviation)
-    CCI.index = df.index
-    df["CCI_10"] = CCI
-    return df
-
-
-def CCI(df, n):
-    """Calculate Commodity Channel Index for given data.
-
-    :param df: pandas.DataFrame
-    :param n:
-    :return: pandas.DataFrame
-    """
-    PP = (df["High"] + df["Low"] + df["Close"]) / 3
-    CCI = pd.Series(
-        (PP - PP.rolling(n, min_periods=n).mean())
-        / (0.015 * PP.rolling(n, min_periods=n).std())
-    )
     CCI.index = df.index
     df["CCI_10"] = CCI
     return df
