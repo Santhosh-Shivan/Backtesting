@@ -11,7 +11,7 @@ def backtest():
     startDate = datetime.date(2017, 1, 1)
     # endDate = datetime.date(2023, 11, 15)
     endDate = datetime.date.today()
-    df = fetcher.__download_data(["ONGC.NS"], startDate, endDate)
+    df = fetcher.__download_data(["TATASTEEL.NS"], startDate, endDate)
     print(df.tail(1))
     """indicators.CCI(df, 20)
     print(df["CCI_10"].tail())"""
@@ -26,7 +26,10 @@ def backtest():
     # draw.strategy_results(df)
     # draw.bollinger_bands_from_df(df)
 
-    strategies.Velocity_SMA(df)
+    # strategies.Velocity_SMA(df)
+    # draw.strategy_results(df)
+
+    strategies.RSI_MACD(df)
     draw.strategy_results(df)
 
     draw.column(
@@ -34,12 +37,12 @@ def backtest():
     )  # buy-sell signals for the strategy.
 
 
-# To check the stance today and make a trade accordingly
-def stanceToday():
+# To check tnhe stance today and make a trade accordingly
+def staceToday():
     startDate = datetime.date(2017, 1, 1)
     # endDate = datetime.date(2023, 11, 15)
     endDate = datetime.date.today()
-    df = fetcher.__download_data(["TCS.NS"], startDate, endDate)
+    df = fetcher.__download_data(["TATASTEEL.NS"], startDate, endDate)
 
     strategies.Velocity_SMA(df)
     print(df["Stance"].tail())

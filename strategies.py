@@ -3,6 +3,7 @@ import numpy as np
 import math
 import compute
 import indicators
+import pandas_ta as ta
 
 
 # Create column Stance
@@ -104,5 +105,53 @@ def Velocity_SMA(df):
     compute.accumulated_close_after_fees(df)
 
 
-def MACD(df):
-    print("Pending.")
+# Should be improved
+# If RSI <= 50 and MACD > MACDs :
+#   buy
+# elif RSI >= 60 aNd MACD < MACDs:
+#   sell
+def RSI_MACD(df):
+    # RSI - pandas TA
+    df["RSI_10"] = ta.rsi(df["Adj Close"], length=10)
+
+    # MACD - pandas TA
+    df.ta.macd(close="Adj close", fast=8, slow=21, signal=5, append=True)
+
+    # Buy and Sell Strategy
+
+    buy_signal = False
+    sell_signal = False
+
+    df["Stance"] = 0
+    last_stance = 0
+    flag = 0
+
+    for i in range(len(df)):
+        df.iloc[i, 10] = last_stance
+
+        ## Buy
+        # Buy signal
+        if df.RSI_10[i] <= 50 and buy_signal == False:
+            buy_signal = True
+            sell_signal = False
+
+        # Buy Confirmation
+        if buy_signal == True:
+            if df.MACD_8_21_5[i] > df.MACDs_8_21_5[i]:
+                df.iloc[i, 10] = 1
+                last_stance = 1
+                flag = 1
+
+        ## Sell
+        # Sell signal
+        if df.RSI_10[i] >= 60 and flag == 1 and sell_signal == False:
+            sell_signal = True
+            buy_signal = False
+
+        # Sell confirmation
+        if sell_signal == True:
+            if df.MACD_8_21_5[i] < df.MACDs_8_21_5[i]:
+                df.iloc[i, 10] = -1
+                last_stance = -1
+
+    compute.accumulated_close_after_fees(df)
