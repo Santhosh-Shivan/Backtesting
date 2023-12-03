@@ -31,11 +31,13 @@ def accumulated_close_after_fees(df):
 
     diff_LastSoldPrice_CurrAdj = 0.00
     last_stance = 0
+    total_fees = 0
     for index, row in df.iterrows():
         if row["Stance"] > 0:
             if row["Stance"] != last_stance:
                 # STT = 0.1% of trading price
                 fees_buy_side = 0.001 * df.loc[index, "Adj Close"]
+                total_fees += fees_buy_side
                 last_stance = row["Stance"]
 
             df.loc[index, "Accumulated Close"] = (
@@ -47,6 +49,7 @@ def accumulated_close_after_fees(df):
             if row["Stance"] != last_stance:
                 # STT = 0.1% of trading price
                 fees_sell_side = 0.001 * df.loc[index, "Adj Close"]
+                total_fees += fees_sell_side
                 last_stance = row["Stance"]
             df.loc[index, "Accumulated Close"] = df.loc[pointer, "Accumulated Close"]
             diff_LastSoldPrice_CurrAdj = (
@@ -58,3 +61,5 @@ def accumulated_close_after_fees(df):
         else:
             df.loc[index, "Accumulated Close"] = df.loc[index, "Adj Close"]
             # print 'Waiting...'
+
+    # print(total_fees)

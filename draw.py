@@ -130,6 +130,15 @@ def macd(df):
 def strategy_results(df, title="Strategy Results"):
     # print df.tail(1)
     last_row = df.tail(1)
+    first_row = df.head(1)
+
+    times_increased_Acc = (
+        last_row["Accumulated Close"].values[0]
+        / first_row["Accumulated Close"].values[0]
+    )
+    times_increased_Adj = (
+        last_row["Adj Close"].values[0] / first_row["Adj Close"].values[0]
+    )
 
     result_series = (last_row["Accumulated Close"] - last_row["Adj Close"]) / last_row[
         "Adj Close"
@@ -154,6 +163,26 @@ def strategy_results(df, title="Strategy Results"):
         0.05,
         0.8,
         "Acc. Close = " + str(pct_more) + "% more than Adj. Close",
+        fontsize=9,
+        ha="left",
+        va="center",
+        transform=ax.transAxes,
+    )
+
+    plt.text(
+        0.05,
+        0.7,
+        "Acc. Close = " + str(times_increased_Acc) + "times the starting Close price",
+        fontsize=9,
+        ha="left",
+        va="center",
+        transform=ax.transAxes,
+    )
+
+    plt.text(
+        0.05,
+        0.6,
+        "Adj. Close = " + str(times_increased_Adj) + "times the starting Close price",
         fontsize=9,
         ha="left",
         va="center",

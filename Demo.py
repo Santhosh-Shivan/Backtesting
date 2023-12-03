@@ -7,14 +7,14 @@ import indicators
 
 
 # get , Apply strategy , draw.
+
+
 def backtest():
     startDate = datetime.date(2017, 1, 1)
     # endDate = datetime.date(2023, 11, 15)
     endDate = datetime.date.today()
-    df = fetcher.__download_data(["TATASTEEL.NS"], startDate, endDate)
+    df = fetcher.__download_data(["MU"], startDate, endDate)
     print(df.tail(1))
-    """indicators.CCI(df, 20)
-    print(df["CCI_10"].tail())"""
 
     # strategies.RSI(df)
     # draw.strategy_results(df, title="RSI strategy")
@@ -26,23 +26,23 @@ def backtest():
     # draw.strategy_results(df)
     # draw.bollinger_bands_from_df(df)
 
-    # strategies.Velocity_SMA(df)
-    # draw.strategy_results(df)
-
-    strategies.RSI_MACD(df)
+    strategies.Velocity_SMA(df)
     draw.strategy_results(df)
+
+    # strategies.RSI_MACD(df)
+    # draw.strategy_results(df)
 
     draw.column(
         df, title="Stance", columns=["Stance"]
     )  # buy-sell signals for the strategy.
 
 
-# To check tnhe stance today and make a trade accordingly
-def staceToday():
-    startDate = datetime.date(2017, 1, 1)
-    # endDate = datetime.date(2023, 11, 15)
+# To check the stance today and make a trade accordingly
+def stanceToday():
+    startDate = datetime.date(2023, 1, 1)
+    # endDate = datetime.date(2023, 12, 1)
     endDate = datetime.date.today()
-    df = fetcher.__download_data(["TATASTEEL.NS"], startDate, endDate)
+    df = fetcher.__download_data(["TITAN.NS"], startDate, endDate)
 
     strategies.Velocity_SMA(df)
     print(df["Stance"].tail())

@@ -83,7 +83,7 @@ def Bollinger_Band(df):
 
 
 def Velocity_SMA(df):
-    df["SMA"] = np.round(indicators.running_average(df["Adj Close"], windowsize=20), 2)
+    df["SMA"] = np.round(indicators.running_average(df["Adj Close"], windowsize=10), 2)
 
     df["Velocity"] = df["SMA"].diff()
 
